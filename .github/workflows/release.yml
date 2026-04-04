@@ -18,14 +18,12 @@ jobs:
           mkdir -p dist/EDMC-Screenshot-Linux
           cp load.py LICENSE README.md dist/EDMC-Screenshot-Linux/
           cd dist
-          zip -r EDMC-Screenshot-Linux.zip EDMC-Screenshot-Linux/
-          sha256sum EDMC-Screenshot-Linux.zip > SHA256SUMS.txt
+          zip -r ../EDMC-Screenshot-Linux.zip EDMC-Screenshot-Linux/
 
-      - name: Upload release assets
+      - name: Upload release asset
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload "${{ github.event.release.tag_name }}" \
-            dist/EDMC-Screenshot-Linux.zip \
-            dist/SHA256SUMS.txt \
+            EDMC-Screenshot-Linux.zip \
             --clobber
