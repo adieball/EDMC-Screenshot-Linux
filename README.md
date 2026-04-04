@@ -1,5 +1,7 @@
 # ED Screenshot Converter
 
+> **Linux only.** This plugin is written for the native Linux installation of EDMarketConnector and will not work on Windows or macOS.
+
 An [EDMarketConnector](https://github.com/EDCD/EDMarketConnector) plugin that automatically converts Elite Dangerous BMP screenshots to PNG, with configurable naming formats based on in-game context.
 
 ## Features
@@ -7,7 +9,9 @@ An [EDMarketConnector](https://github.com/EDCD/EDMarketConnector) plugin that au
 - Converts screenshots from BMP to PNG automatically the moment you take them in-game
 - Names files using live journal data: current system, body, timestamp, and CMDR name
 - 4 configurable naming formats
+- Separate **Input** and **Output** directory settings for maximum flexibility
 - Auto-detects your screenshots directory from EDMC's journal configuration
+- Shows a thumbnail of the last converted screenshot in the EDMC main window (click to open output folder)
 - Settings tab integrated directly into EDMC's File → Settings
 - Optionally deletes the original BMP after conversion
 
@@ -17,9 +21,9 @@ Elite Dangerous saves screenshots as uncompressed BMP files. This plugin convert
 
 ## Requirements
 
+- **Linux** — this plugin uses the native Linux EDMC installation and is not compatible with Windows or macOS
 - [EDMarketConnector](https://github.com/EDCD/EDMarketConnector) 5.x or later
 - Python package: `Pillow` (included with EDMC on Linux)
-- Linux (uses EDMC's native Linux installation)
 
 ## Installation
 
@@ -34,14 +38,23 @@ Elite Dangerous saves screenshots as uncompressed BMP files. This plugin convert
 
 Open **File → Settings** in EDMC and select the **ED Screenshot Converter** tab.
 
-![Settings tab](docs/settings.png)
+### Input Directory
 
-### Output Directory
+Where Elite Dangerous saves its raw BMP screenshots.
 
 | Option | Behaviour |
 |---|---|
 | **Auto-detect** | Derived from EDMC's configured journal directory — works automatically if your journal and screenshots share the same base path (e.g. a Nextcloud or cloud-synced folder) |
 | **Custom** | Pick any directory with the Browse button |
+
+### Output Directory
+
+Where converted PNG files are saved.
+
+| Option | Behaviour |
+|---|---|
+| **Same as input directory** | Converted PNGs land in the same folder as the source BMPs |
+| **Custom** | Pick a separate destination — useful if you want BMPs and PNGs in different locations |
 
 ### Filename Formats
 
@@ -58,6 +71,10 @@ The counter format auto-increments per system+body combination, matching the nam
 
 - **Delete original BMP after conversion** — enabled by default; disable if you want to keep both files
 
+## Main Window
+
+After each screenshot a small thumbnail appears in the EDMC main window below the plugin label. Click the filename to open the output folder in your file manager.
+
 ## How It Works
 
 Elite Dangerous writes a `Screenshot` entry to its journal file every time you take a screenshot. This entry includes the current system name, body name, and timestamp. EDMC exposes these events to plugins via the `journal_entry` callback — so this plugin receives the metadata at the exact moment the screenshot is taken, with no polling or file watching needed.
@@ -66,7 +83,7 @@ The screenshots directory is resolved by navigating from EDMC's configured `jour
 
 ```
 <base>/Journal Files/Elite Dangerous   ← journaldir
-<base>/Screenshots/Frontier Developments/Elite Dangerous   ← auto-detected screenshots dir
+<base>/Screenshots/Frontier Developments/Elite Dangerous   ← auto-detected input dir
 ```
 
 This works automatically if both directories share the same cloud-sync base (e.g. Nextcloud, Syncthing, or similar).
