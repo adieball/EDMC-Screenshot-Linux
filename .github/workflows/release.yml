@@ -20,6 +20,11 @@ jobs:
           cd dist
           zip -r EDMC-Screenshot-Linux.zip EDMC-Screenshot-Linux/
 
+      - name: Compute SHA256
+        id: sha
+        run: |
+          echo "hash=$(sha256sum dist/EDMC-Screenshot-Linux.zip | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+
       - name: Upload release asset
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -27,3 +32,14 @@ jobs:
           gh release upload "${{ github.event.release.tag_name }}" \
             dist/EDMC-Screenshot-Linux.zip \
             --clobber
+
+      - name: Append SHA256 to release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT_BODY=$(gh release view "${{ github.event.release.tag_name }}" --json body -q .body)
+          gh release edit "${{ github.event.release.tag_name }}" \
+            --notes "${CURRENT_BODY}
+
+---
+**SHA256:** \`${{ steps.sha.outputs.hash }}\`"
