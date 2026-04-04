@@ -1,5 +1,9 @@
 # ED Screenshot Converter
 
+> [!NOTE]
+> This project is 95% vibe-coded. Some stuff I did on my own, but all bugs are 100% written by Claude.
+
+
 > **Linux only.** This plugin is written for the native Linux installation of EDMarketConnector and will not work on Windows or macOS.
 
 An [EDMarketConnector](https://github.com/EDCD/EDMarketConnector) plugin that automatically converts Elite Dangerous BMP screenshots to PNG, with configurable naming formats based on in-game context.
