@@ -19,8 +19,8 @@ from PIL import Image, ImageTk
 from config import config
 
 plugin_name = "ED Screenshot Converter"
-__version__ = "0.1.2"
-logger = logging.getLogger(f"EDMarketConnector.{plugin_name}")
+__version__ = "0.1.3"
+logger = logging.getLogger(__name__)
 
 # Config keys
 CFG_ENABLED    = "ed_sc_enabled"
