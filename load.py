@@ -16,11 +16,11 @@ from pathlib import Path
 
 import myNotebook as nb
 from PIL import Image, ImageTk
-from config import config
+from config import appname, config
 
 plugin_name = "ED Screenshot Converter"
-__version__ = "0.1.3"
-logger = logging.getLogger(__name__)
+__version__ = "0.1.4"
+logger = logging.getLogger(f'{appname}.{Path(__file__).parent.name}')
 
 # Config keys
 CFG_ENABLED    = "ed_sc_enabled"
