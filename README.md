@@ -14,7 +14,7 @@ An [EDMarketConnector](https://github.com/EDCD/EDMarketConnector) plugin that au
 - Names files using live journal data: current system, body, timestamp, and CMDR name
 - 4 configurable naming formats
 - Separate **Input** and **Output** directory settings for maximum flexibility
-- Auto-detects your screenshots directory from EDMC's journal configuration
+- Auto-detects your screenshots directory from EDMC's journal configuration and common Steam, Heroic, Lutris, and Wine prefixes
 - Shows a thumbnail of the last converted screenshot in the EDMC main window (click to open output folder)
 - Settings tab integrated directly into EDMC's File → Settings
 - Optionally deletes the original BMP after conversion
@@ -26,13 +26,13 @@ Elite Dangerous saves screenshots as uncompressed BMP files. This plugin convert
 ## Requirements
 
 - **Linux** — this plugin uses the native Linux EDMC installation and is not compatible with Windows or macOS
-- [EDMarketConnector](https://github.com/EDCD/EDMarketConnector) 5.x or later
+- [EDMarketConnector](https://github.com/EDCD/EDMarketConnector) 6.1.2 or later (runs on its bundled Python 3.13)
 - Python package: `Pillow` (included with EDMC on Linux)
 
 ## Installation
 
 1. Download or clone this repository
-2. Copy the `ED-Screenshot-Converter` folder into your EDMC plugins directory:
+2. Copy the `EDMC-Screenshot-Linux` folder into your EDMC plugins directory:
    ```
    ~/.local/share/EDMarketConnector/plugins/
    ```
@@ -48,7 +48,7 @@ Where Elite Dangerous saves its raw BMP screenshots.
 
 | Option | Behaviour |
 |---|---|
-| **Auto-detect** | Derived from EDMC's configured journal directory — works automatically if your journal and screenshots share the same base path (e.g. a Nextcloud or cloud-synced folder) |
+| **Auto-detect** | Searches the journal-derived folder plus common Steam, Flatpak Steam, Heroic, Lutris, and Wine/Proton prefixes for `Pictures` or `My Pictures/Frontier Developments/Elite Dangerous` |
 | **Custom** | Pick any directory with the Browse button |
 
 ### Output Directory
@@ -64,12 +64,12 @@ Where converted PNG files are saved.
 
 | Format | Example |
 |---|---|
-| Date + System + Body | `2026-04-03_22-18-00_Eta Carinae_A 1.png` |
+| Date + System + Body | `20260403-221800_Eta Carinae_A 1.png` |
 | System (Body) + Counter *(classic ED style)* | `Eta Carinae(A 1)_00001.png` |
-| CMDR + Date + System + Body | `F0RD42_2026-04-03_Eta Carinae_A 1.png` |
-| System + Body + Date | `Eta Carinae_A 1_2026-04-03.png` |
+| CMDR + Date + System + Body | `F0RD42_20260403-221800_Eta Carinae_A 1.png` |
+| System + Body + Date | `Eta Carinae_A 1_20260403-221800.png` |
 
-The counter format auto-increments per system+body combination, matching the naming style used by other ED screenshot tools.
+The date formats use the computer's local time as `YYYYMMDD-HHMMSS`. The counter format auto-increments per system+body combination, matching the naming style used by other ED screenshot tools. Body names are written without the system prefix that Elite Dangerous includes in the journal.
 
 ### Other Options
 
@@ -83,14 +83,14 @@ After each screenshot a small thumbnail appears in the EDMC main window below th
 
 Elite Dangerous writes a `Screenshot` entry to its journal file every time you take a screenshot. This entry includes the current system name, body name, and timestamp. EDMC exposes these events to plugins via the `journal_entry` callback — so this plugin receives the metadata at the exact moment the screenshot is taken, with no polling or file watching needed.
 
-The screenshots directory is resolved by navigating from EDMC's configured `journaldir`:
+Auto-detection first tries the folder derived from EDMC's configured `journaldir`:
 
 ```
 <base>/Journal Files/Elite Dangerous   ← journaldir
 <base>/Screenshots/Frontier Developments/Elite Dangerous   ← auto-detected input dir
 ```
 
-This works automatically if both directories share the same cloud-sync base (e.g. Nextcloud, Syncthing, or similar).
+That covers cloud-synced setups such as Nextcloud or Syncthing. It then checks common native and Flatpak installations of Steam, Heroic, Lutris, and direct Wine/Proton prefixes, looking for `Pictures` and `My Pictures/Frontier Developments/Elite Dangerous`. Steam libraries listed in `libraryfolders.vdf` are included, including libraries on other drives. Nested layouts such as Heroic's `Prefixes/default/Elite Dangerous/drive_c/...` are handled as well. If EDMC itself is installed as a Flatpak, grant it access to the screenshot folder (Flatseal → Filesystem) or use a custom input directory.
 
 ## License
 
